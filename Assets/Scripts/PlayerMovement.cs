@@ -11,7 +11,7 @@ public class PlayerMovement : MonoBehaviour
 
     private float horizontalInput, verticalInput;
 
-    private float speed = 10, rotationSpeed = 300, dashCount = 2, remainingPropulsion = 500;
+    private float speed = 10, rotationSpeed = 300, dashCount = 2, remainingPropulsion = 300;
 
     private bool inWater = false,
         canGetHit = true,
@@ -38,8 +38,8 @@ public class PlayerMovement : MonoBehaviour
         //print("Health: " + health);
         //print("horizontal: " + horizontalInput);
         //print("vertical: " + verticalInput);
-        print("Remaining propulsion: " + remainingPropulsion);
-        print(isRecharging);
+        //print("Remaining propulsion: " + remainingPropulsion);
+        //print(isRecharging);
 
         if (Input.GetMouseButtonDown(0) && canShoot)
         {
@@ -49,6 +49,7 @@ public class PlayerMovement : MonoBehaviour
         //Main movement
         horizontalInput = Input.GetAxis(Horizontal);
         verticalInput = Input.GetAxis(Vertical);
+        if (horizontalInput == 0 && verticalInput == 0) GetComponent<Rigidbody2D>().angularVelocity = 0;
         
         GetComponent<Rigidbody2D>().AddForce(Vector2.right * horizontalInput * speed);
         if (inWater) GetComponent<Rigidbody2D>().AddForce(Vector2.up * verticalInput * speed);
@@ -61,17 +62,17 @@ public class PlayerMovement : MonoBehaviour
         if (Input.GetKey(KeyCode.Space))
         {
             isRecharging = false;
-            remainingPropulsion -= 3 * Time.time;
+            remainingPropulsion -= Time.time;
             if (remainingPropulsion > 1) GetComponent<Rigidbody2D>().AddForce(tail.up * 20);
         }
-        else if (!waitingForRecharge && remainingPropulsion < 499)
+        else if (!waitingForRecharge && remainingPropulsion < 299)
         {
             StartCoroutine(Recharge());
         }
 
         if (isRecharging) remainingPropulsion += 100 * Time.deltaTime;
         if (remainingPropulsion < 0) remainingPropulsion = 0;
-        if (remainingPropulsion > 500) remainingPropulsion = 500;
+        if (remainingPropulsion > 300) remainingPropulsion = 300;
         
         //Change drag based on water/air
         inWater = transform.position.y < 0;
