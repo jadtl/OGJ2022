@@ -19,7 +19,6 @@ public class FishEnemyMovement : Enemy
     // Update is called once per frame
     void Update()
     {
-        
         Vector2 playerPosition = cam.WorldToViewportPoint(player.position);
         Vector2 transformPosition = (Vector2)cam.WorldToViewportPoint(transform.position);
         float angle = AngleBetweenTwoPoints(playerPosition, transformPosition);
@@ -28,6 +27,8 @@ public class FishEnemyMovement : Enemy
         {
             StartCoroutine(Attack());
         }
+        
+        if (GetComponent<Rigidbody2D>().velocity.magnitude == 0) GetComponent<Rigidbody2D>().angularVelocity = 0;
 
         if (health == 0)
         {

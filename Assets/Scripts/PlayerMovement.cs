@@ -8,11 +8,17 @@ public class PlayerMovement : MonoBehaviour
 {
     private const string Horizontal = "Horizontal";
     private const string Vertical = "Vertical";
-    
+
     private float horizontalInput, verticalInput;
 
-    private float speed = 10, rotationSpeed = 300;
-    private bool isDashing = false, inWater = false, canGetHit = true, canShoot = true;
+    private float speed = 10, rotationSpeed = 300, dashCount = 2, remainingPropulsion = 300;
+
+    private bool inWater = false,
+        canGetHit = true,
+        canShoot = true,
+        isDashing = false,
+        isRecharging = true,
+        waitingForRecharge = false;
 
     private int health = 10;
 
@@ -32,29 +38,41 @@ public class PlayerMovement : MonoBehaviour
         //print("Health: " + health);
         //print("horizontal: " + horizontalInput);
         //print("vertical: " + verticalInput);
+        //print("Remaining propulsion: " + remainingPropulsion);
+        //print(isRecharging);
 
         if (Input.GetMouseButtonDown(0) && canShoot)
         {
             StartCoroutine(Shoot());
         }
-        
-        //Manage health
-        if (health == 0)
-        {
-            Destroy(gameObject);
-        }
 
         //Main movement
         horizontalInput = Input.GetAxis(Horizontal);
         verticalInput = Input.GetAxis(Vertical);
+        if (horizontalInput == 0 && verticalInput == 0) GetComponent<Rigidbody2D>().angularVelocity = 0;
         
         GetComponent<Rigidbody2D>().AddForce(Vector2.right * horizontalInput * speed);
         if (inWater) GetComponent<Rigidbody2D>().AddForce(Vector2.up * verticalInput * speed);
 
-        if (Input.GetKeyDown(KeyCode.LeftShift) && !isDashing)
+        if (Input.GetKeyDown(KeyCode.LeftShift) && dashCount > 0 && !isDashing)
         {
             StartCoroutine(Dash());
         }
+        
+        if (Input.GetKey(KeyCode.Space))
+        {
+            isRecharging = false;
+            remainingPropulsion -= Time.time;
+            if (remainingPropulsion > 1) GetComponent<Rigidbody2D>().AddForce(tail.up * 20);
+        }
+        else if (!waitingForRecharge && remainingPropulsion < 299)
+        {
+            StartCoroutine(Recharge());
+        }
+
+        if (isRecharging) remainingPropulsion += 100 * Time.deltaTime;
+        if (remainingPropulsion < 0) remainingPropulsion = 0;
+        if (remainingPropulsion > 300) remainingPropulsion = 300;
         
         //Change drag based on water/air
         inWater = transform.position.y < 0;
@@ -75,18 +93,26 @@ public class PlayerMovement : MonoBehaviour
         Vector3 dir = Input.mousePosition - pos;
         float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
         head.rotation = Quaternion.AngleAxis(angle - 90f, Vector3.forward);
+        
+        //Manage health
+        if (health == 0)
+        {
+            Destroy(gameObject);
+        }
     }
     
     IEnumerator Dash()
     {
+        dashCount--;
         isDashing = true;
         GetComponent<Rigidbody2D>().AddForce(Vector2.right * horizontalInput * 200);
         GetComponent<Rigidbody2D>().AddForce(Vector2.up * verticalInput * 200);
         ink.SetActive(true);
-        yield return new WaitForSeconds(1);
-        ink.SetActive(false);
-        yield return new WaitForSeconds(2);
+        yield return new WaitForSeconds(.5f);
         isDashing = false;
+        ink.SetActive(false);
+        yield return new WaitForSeconds(3.5f);
+        dashCount++;
     }
     
     IEnumerator Shoot()
@@ -112,5 +138,13 @@ public class PlayerMovement : MonoBehaviour
         canGetHit = false;
         yield return new WaitForSeconds(3);
         canGetHit = true;
+    }
+
+    IEnumerator Recharge()
+    {
+        waitingForRecharge = true;
+        yield return new WaitForSeconds(1);
+        waitingForRecharge = false;
+        isRecharging = true;
     }
 }
