@@ -27,6 +27,8 @@ public class FishEnemyMovement : Enemy
         {
             StartCoroutine(Attack());
         }
+        
+        if (GetComponent<Rigidbody2D>().velocity.magnitude == 0) GetComponent<Rigidbody2D>().angularVelocity = 0;
 
         if (health == 0)
         {
