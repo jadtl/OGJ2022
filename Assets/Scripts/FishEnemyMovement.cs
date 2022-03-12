@@ -3,12 +3,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class FishEnemyMovement : MonoBehaviour
+public class FishEnemyMovement : Enemy
 {
     [SerializeField] private Transform player;
     [SerializeField] private Camera cam;
 
-    private bool canAttack = true, inWater = true;
+    private bool canAttack = true;
     
     // Start is called before the first frame update
     void Start()
@@ -19,16 +19,19 @@ public class FishEnemyMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        inWater = transform.position.y < 0;
-        GetComponent<Rigidbody2D>().gravityScale = inWater ? 0 : 1;
         
         Vector2 playerPosition = cam.WorldToViewportPoint(player.position);
         Vector2 transformPosition = (Vector2)cam.WorldToViewportPoint(transform.position);
         float angle = AngleBetweenTwoPoints(playerPosition, transformPosition);
-        transform.rotation =  Quaternion.Euler(new Vector3(0f,0f,angle));
+        transform.rotation =  Quaternion.Euler(new Vector3(0f,0f,angle + 10));
         if (canAttack)
         {
             StartCoroutine(Attack());
+        }
+
+        if (health == 0)
+        {
+            Destroy(gameObject);
         }
     }
     
@@ -48,7 +51,7 @@ public class FishEnemyMovement : MonoBehaviour
     {
         if (col.transform.CompareTag("Player"))
         {
-            player.GetComponent<PlayerMovement>().TakeDamage(2);
+            col.transform.GetComponent<PlayerMovement>().TakeDamage(2);
         }
     }
 }
