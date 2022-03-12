@@ -491,6 +491,7 @@ MonoBehaviour:
   tail: {fileID: 1986468969}
   head: {fileID: 860832435}
   ink: {fileID: 509996828}
+  bullet: {fileID: 6300424853140798182, guid: 4b862b2cd85e03a4fb2fee0171dd0eda, type: 3}
   cam: {fileID: 1814712069}
 --- !u!50 &455104396
 Rigidbody2D:
@@ -5446,13 +5447,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 928426136}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.84, y: 3.47, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: -0.08332453, w: 0.9965225}
+  m_LocalPosition: {x: -0.25, y: 3.55, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 860832435}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: -9.559}
 --- !u!212 &928426138
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -5601,7 +5602,7 @@ GameObject:
   - component: {fileID: 1459727119}
   m_Layer: 0
   m_Name: Enemy
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -5759,9 +5760,9 @@ Camera:
   near clip plane: 0.3
   far clip plane: 1000
   field of view: 60
-  orthographic: 0
+  orthographic: 1
   orthographic size: 5
-  m_Depth: 0
+  m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
     m_Bits: 4294967295

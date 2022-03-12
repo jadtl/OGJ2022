@@ -12,12 +12,12 @@ public class PlayerMovement : MonoBehaviour
     private float horizontalInput, verticalInput;
 
     private float speed = 10, rotationSpeed = 300;
-    private bool isDashing = false, inWater = false, canGetHit = true;
+    private bool isDashing = false, inWater = false, canGetHit = true, canShoot = true;
 
     private int health = 10;
 
     [SerializeField] private Transform tail, head;
-    [SerializeField] private GameObject ink;
+    [SerializeField] private GameObject ink, bullet;
     [SerializeField] private Camera cam;
     
     // Start is called before the first frame update
@@ -29,14 +29,21 @@ public class PlayerMovement : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-        print("Health: " + health);
+        //print("Health: " + health);
         //print("horizontal: " + horizontalInput);
         //print("vertical: " + verticalInput);
+
+        if (Input.GetMouseButtonDown(0) && canShoot)
+        {
+            StartCoroutine(Shoot());
+        }
         
-        //Change drag based on water/air
-        inWater = transform.position.y < 0;
-        GetComponent<Rigidbody2D>().gravityScale = inWater ? .3f : 1;
-        
+        //Manage health
+        if (health == 0)
+        {
+            Destroy(gameObject);
+        }
+
         //Main movement
         horizontalInput = Input.GetAxis(Horizontal);
         verticalInput = Input.GetAxis(Vertical);
@@ -48,6 +55,10 @@ public class PlayerMovement : MonoBehaviour
         {
             StartCoroutine(Dash());
         }
+        
+        //Change drag based on water/air
+        inWater = transform.position.y < 0;
+        GetComponent<Rigidbody2D>().gravityScale = inWater ? .3f : 1;
 
         //Rotate tail in movement direction
         Vector2 movementDirection = new Vector2(horizontalInput, verticalInput);
@@ -60,14 +71,10 @@ public class PlayerMovement : MonoBehaviour
         }
         
         //Rotate head towards mouse
-        Vector2 positionOnScreen = cam.WorldToViewportPoint(head.position);
-        Vector2 mouseOnScreen = (Vector2)cam.ScreenToViewportPoint(Input.mousePosition);
-        float angle = AngleBetweenTwoPoints(positionOnScreen, mouseOnScreen);
-        head.rotation =  Quaternion.Euler(new Vector3(0f,0f,angle + 90));
-    }
-    
-    float AngleBetweenTwoPoints(Vector3 a, Vector3 b) {
-        return Mathf.Atan2(a.y - b.y, a.x - b.x) * Mathf.Rad2Deg;
+        Vector3 pos = cam.WorldToScreenPoint(head.position);
+        Vector3 dir = Input.mousePosition - pos;
+        float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
+        head.rotation = Quaternion.AngleAxis(angle - 90f, Vector3.forward);
     }
     
     IEnumerator Dash()
@@ -80,6 +87,15 @@ public class PlayerMovement : MonoBehaviour
         ink.SetActive(false);
         yield return new WaitForSeconds(2);
         isDashing = false;
+    }
+    
+    IEnumerator Shoot()
+    {
+        canShoot = false;
+        GameObject spawnedBullet = GameObject.Instantiate(bullet, head.position + head.up, head.rotation);
+        spawnedBullet.GetComponent<Rigidbody2D>().AddForce(head.up * 500);
+        yield return new WaitForSeconds(1);
+        canShoot = true;
     }
 
     public void TakeDamage(int damage)
