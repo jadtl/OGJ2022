@@ -183,6 +183,7 @@ public class PlayerMovement : Score
             renderer.color = Color.white;
         }
 
+        health = 20;
         transform.position = checkpoints[currentCheckpoint];
     }
 
