@@ -24,9 +24,9 @@ public class PlayerMovement : Score
         isRecharging = true,
         waitingForRecharge = false;
 
-    private int health = 20, currentCheckpoint = 0;
+    private int health = 10, currentCheckpoint = 0;
     private List<Vector2> checkpoints = new List<Vector2>();
-    [SerializeField] private AudioSource core, soy, waterIn, waterOut;
+    [SerializeField] private AudioSource core, soy, waterIn, waterOut, shoot;
     [SerializeField] private Transform tail, head;
     [SerializeField] private GameObject dashParticles, jetParticles, bullet, titan;
     [SerializeField] private Camera cam;
@@ -131,8 +131,6 @@ public class PlayerMovement : Score
             core.Stop();
             soy.Play();
         }
-        
-        if (currentCheckpoint == 2) titan.SetActive(true);
     }
 
     IEnumerator Dash()
@@ -158,6 +156,7 @@ public class PlayerMovement : Score
         canShoot = false;
         GameObject spawnedBullet = GameObject.Instantiate(bullet, head.position + head.up * .25f, head.rotation);
         spawnedBullet.GetComponent<Rigidbody2D>().AddForce(head.up * 1000);
+        shoot.Play();
         yield return new WaitForSeconds(.1f);
         canShoot = true;
     }
