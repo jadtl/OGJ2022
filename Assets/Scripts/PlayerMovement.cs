@@ -33,7 +33,7 @@ public class PlayerMovement : Score
     [SerializeField] private Animator anim;
     [SerializeField] private Slider healthSlider, inkSlider;
     [SerializeField] private TextMeshProUGUI scoreText;
-    
+
     // Start is called before the first frame update
     void Start()
     {
@@ -53,7 +53,7 @@ public class PlayerMovement : Score
         //print(isRecharging);
         //print(GetComponent<Rigidbody2D>().velocity.magnitude);
         //print(score);
-        
+
         healthSlider.value = (float) health / 20;
         inkSlider.value = remainingPropulsion / 1000;
         if (score > 99999) score = 99999;
@@ -68,7 +68,7 @@ public class PlayerMovement : Score
         horizontalInput = Input.GetAxis(Horizontal);
         verticalInput = Input.GetAxis(Vertical);
         if (horizontalInput == 0 && verticalInput == 0) GetComponent<Rigidbody2D>().angularVelocity = 0;
-        
+
         GetComponent<Rigidbody2D>().AddForce(Vector2.right * horizontalInput * speed);
         if (inWater) GetComponent<Rigidbody2D>().AddForce(Vector2.up * verticalInput * speed);
 
@@ -76,7 +76,7 @@ public class PlayerMovement : Score
         {
             StartCoroutine(Dash());
         }
-        
+
         if (Input.GetKey(KeyCode.Space))
         {
             isRecharging = false;
@@ -91,11 +91,11 @@ public class PlayerMovement : Score
         {
             StartCoroutine(Recharge());
         }
-        if (!Input.GetKey(KeyCode.Space) || remainingPropulsion < .1f) jetParticles.SetActive(false);
+        if (!Input.GetKey(KeyCode.Space) || remainingPropulsion < 1) jetParticles.SetActive(false);
         if (isRecharging) remainingPropulsion += 300 * Time.deltaTime;
         if (remainingPropulsion < 0) remainingPropulsion = 0;
         if (remainingPropulsion > 1000) remainingPropulsion = 1000;
-        
+
         //Change drag based on water/air
         inWater = transform.position.y < 0;
         GetComponent<Rigidbody2D>().gravityScale = inWater ? .3f : 1;
@@ -114,13 +114,13 @@ public class PlayerMovement : Score
             tail.rotation =
                 Quaternion.RotateTowards(tail.rotation, targetRotation, rotationSpeed * Time.deltaTime);
         }
-        
+
         //Rotate head towards mouse
         Vector3 pos = cam.WorldToScreenPoint(head.position);
         Vector3 dir = Input.mousePosition - pos;
         float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
         head.rotation = Quaternion.AngleAxis(angle - 90f, Vector3.forward);
-        
+
         //Manage health
         if (health == 0)
         {
@@ -132,7 +132,7 @@ public class PlayerMovement : Score
             soy.Play();
         }
     }
-    
+
     IEnumerator Dash()
     {
         dashCount--;
@@ -150,7 +150,7 @@ public class PlayerMovement : Score
         yield return new WaitForSeconds(3.5f);
         dashCount++;
     }
-    
+
     IEnumerator Shoot()
     {
         canShoot = false;

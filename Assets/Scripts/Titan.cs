@@ -4,10 +4,10 @@ using UnityEngine;
 
 public class Titan : MonoBehaviour
 {
-    [SerializeField] private Transform eye, doorLeft, doorRight, body, handCollider;
+    [SerializeField] private Transform eye, doorLeft, doorRight, body, handColliderLeft, handColliderRight;
     [SerializeField] private GameObject fish, jellyfish;
     [SerializeField] private Animator anim;
-    private bool openingDoors = false, closingDoors = false, canTry = true, isSmashing = false;
+    private bool openingDoors = false, closingDoors = false, canTry = true;
     
     
     // Start is called before the first frame update
@@ -17,7 +17,7 @@ public class Titan : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
         if (openingDoors)
         {
@@ -36,34 +36,32 @@ public class Titan : MonoBehaviour
             StartCoroutine(NewTry());
         }
 
-        if (isSmashing)
-        {
-            handCollider.position -= Vector3.up * 5;
-            if (handCollider.position.y < -1) handCollider.position = new Vector2(handCollider.position.x, -1);
-        }
-        
-        
+
     }
 
     IEnumerator Smash(int side)
     {
+        Transform temp;
         if (side == 0) body.localScale = new Vector3(-1.5f, 1.5f, 1.5f);
         else body.localScale = new Vector3(1.5f, 1.5f, 1.5f);
+        temp = side == 0 ? handColliderLeft : handColliderRight;
+        for (int i = 0; i < 4; i++)
+        {
+            temp.GetComponent<SpriteRenderer>().enabled = true;
+            yield return new WaitForSeconds(.1f);
+            temp.GetComponent<SpriteRenderer>().enabled = false;
+            yield return new WaitForSeconds(.1f);
+        }
+        
         anim.SetBool("Smash", true);
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(.5f);
+        temp.GetComponent<Collider2D>().enabled = true;
+        yield return new WaitForSeconds(.5f);
         anim.SetBool("Smash", false);
-        //isSmashing = true;
-        handCollider.GetComponent<Collider2D>().enabled = true;
-        handCollider.GetComponent<SpriteRenderer>().color = Color.red;
-        yield return new WaitForSeconds(.05f);
-        //isSmashing = false;
-        yield return new WaitForSeconds(1f);
-        handCollider.GetComponent<SpriteRenderer>().color = Color.white;
-        handCollider.GetComponent<Collider2D>().enabled = false;
-        handCollider.transform.position = new Vector2(handCollider.transform.position.x, 5.47f);
-        yield return new WaitForSeconds(1);
+        yield return new WaitForSeconds(.5f);
+        temp.GetComponent<Collider2D>().enabled = false;
+        
         canTry = true;
-
     }
 
     IEnumerator OpenDoors()
@@ -76,12 +74,10 @@ public class Titan : MonoBehaviour
         {
             if (Random.Range(0, 2) == 0)
             {
-                //Instantiate(fish, new Vector2(233.26f, -14.85f), Quaternion.identity);
-                Instantiate(fish, new Vector2(42.38f, -9.75f), Quaternion.identity);
+                Instantiate(fish, new Vector2(233.26f, -14.85f), Quaternion.identity);
             }
             else {
-                //Instantiate(fish, new Vector2(42.38f, -9.75f), Quaternion.identity);
-                //Instantiate(jellyfish, new Vector2(233.26f, -14.85f), Quaternion.identity);
+                Instantiate(jellyfish, new Vector2(233.26f, -14.85f), Quaternion.identity);
             }
             yield return new WaitForSeconds(.5f);
         }
