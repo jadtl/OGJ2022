@@ -26,7 +26,7 @@ public class PlayerMovement : MonoBehaviour
 
     private int health = 20, score = 0, currentCheckpoint = 0;
     private List<Vector2> checkpoints = new List<Vector2>();
-    [SerializeField] private AudioSource core, soy;
+    [SerializeField] private AudioSource core, soy, waterIn, waterOut;
     [SerializeField] private Transform tail, head;
     [SerializeField] private GameObject dashParticles, jetParticles, bullet;
     [SerializeField] private Camera cam;
@@ -99,6 +99,11 @@ public class PlayerMovement : MonoBehaviour
         //Change drag based on water/air
         inWater = transform.position.y < 0;
         GetComponent<Rigidbody2D>().gravityScale = inWater ? .3f : 1;
+        if (Mathf.Abs(transform.position.y) < .1f)
+        {
+            if (GetComponent<Rigidbody2D>().velocity.y > 0) waterOut.Play();
+            else waterIn.Play();
+        }
 
         //Rotate tail in movement direction
         Vector2 movementDirection = new Vector2(horizontalInput, verticalInput);
@@ -123,7 +128,7 @@ public class PlayerMovement : MonoBehaviour
         }
 
         if (currentCheckpoint == 2 && !soy.isPlaying) {
-            core.Stop();
+            //core.Stop();
             soy.Play();
         }
     }
