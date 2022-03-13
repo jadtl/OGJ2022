@@ -130,7 +130,7 @@ public class PlayerMovement : MonoBehaviour
         GetComponent<Rigidbody2D>().AddForce(Vector2.up * verticalInput * 200);
         dashParticles.SetActive(true);
         anim.SetBool("Dash", true);
-        yield return new WaitForSeconds(.25f);
+        yield return new WaitForSeconds(.75f);
         anim.SetBool("Dash", false);
         isDashing = false;
         dashParticles.SetActive(false);
