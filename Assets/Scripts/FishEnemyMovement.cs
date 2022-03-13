@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -46,7 +45,7 @@ public class FishEnemyMovement : Enemy
         yield return new WaitForSeconds(1);
         anim.SetBool("Dash", false);
         GetComponent<Rigidbody2D>().AddForce(transform.right * 4000);
-        yield return new WaitForSeconds(5);
+        yield return new WaitForSeconds(Random.Range(3, 6));
         canAttack = true;
     }
 
