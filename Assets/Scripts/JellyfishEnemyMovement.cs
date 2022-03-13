@@ -7,11 +7,16 @@ public class JellyfishEnemyMovement : Enemy
     private Vector2 initialPosition;
     private Vector2 destination;
     private bool reachedTarget = true;
+    [SerializeField] private AudioSource source;
+    private float minWaitTime = 5f;
+    private float maxWaitTime = 10f;
+    private float waitTimeCountdown = -1f;
     
     // Start is called before the first frame update
     void Start()
     {
         initialPosition = transform.position;
+        source = GetComponent<AudioSource>();
     }
 
     // Update is called once per frame
@@ -28,6 +33,17 @@ public class JellyfishEnemyMovement : Enemy
         if (Vector2.Distance(transform.position, destination) < 1)
         {
             reachedTarget = true;
+        }
+
+        // Random sounds
+        if (!source.isPlaying) {
+            if (waitTimeCountdown < 0f) {
+                source.Play(0);
+                waitTimeCountdown = Random.Range(minWaitTime, maxWaitTime);
+            }
+            else {
+                waitTimeCountdown -= Time.deltaTime;
+            }
         }
     }
     
