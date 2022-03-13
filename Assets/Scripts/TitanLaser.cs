@@ -5,6 +5,7 @@ using UnityEngine;
 public class TitanLaser : Enemy
 {
     private bool inPhase = false, isAttacking = false, pair = false;
+    [SerializeField] private AudioSource laserCast, laserChannel;
     [SerializeField] private GameObject laser, eyeSprite;
     
     // Start is called before the first frame update
@@ -32,6 +33,7 @@ public class TitanLaser : Enemy
 
         if (isAttacking)
         {
+            laserCast.Play();
             transform.RotateAround(eyeSprite.transform.position, pair? -transform.forward : transform.forward, 5*Time.deltaTime);
         }
     }
@@ -41,10 +43,12 @@ public class TitanLaser : Enemy
         inPhase = true;
         yield return new WaitForSeconds(Random.Range(5, 10));
         inPhase = false;
+
     }
     
     IEnumerator Attack()
     {
+        laserChannel.Play();
         isAttacking = true;
         laser.SetActive(true);
         yield return new WaitForSeconds(5);

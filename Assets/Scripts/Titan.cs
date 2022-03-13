@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Titan : MonoBehaviour
 {
+    [SerializeField] private AudioSource smash;
     [SerializeField] private Transform eye, doorLeft, doorRight, body, handColliderLeft, handColliderRight;
     [SerializeField] private GameObject fish, jellyfish;
     [SerializeField] private Animator anim;
@@ -58,6 +59,7 @@ public class Titan : MonoBehaviour
         temp.GetComponent<Collider2D>().enabled = true;
         yield return new WaitForSeconds(.5f);
         anim.SetBool("Smash", false);
+        smash.Play();
         yield return new WaitForSeconds(.5f);
         temp.GetComponent<Collider2D>().enabled = false;
         

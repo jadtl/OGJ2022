@@ -2568,6 +2568,8 @@ MonoBehaviour:
   player: {fileID: 6892988498222134524}
   anim: {fileID: 0}
   isBoss: 1
+  laserCast: {fileID: 418208100}
+  laserChannel: {fileID: 418208099}
   laser: {fileID: 2004684143}
   eyeSprite: {fileID: 7055302865032653729}
 --- !u!1001 &597619200
@@ -25253,6 +25255,7 @@ MonoBehaviour:
   soy: {fileID: 418208093}
   waterIn: {fileID: 418208096}
   waterOut: {fileID: 418208095}
+  shoot: {fileID: 418208097}
   tail: {fileID: 6892988498536922911}
   head: {fileID: 6892988497545470405}
   dashParticles: {fileID: 6892988498134404202}
@@ -25549,7 +25552,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!212 &7055302864232320515
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -25913,6 +25916,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5f9a7a4317ac7e7459c0735902a03f4a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  smash: {fileID: 418208098}
   eye: {fileID: 497939363}
   doorLeft: {fileID: 7055302864232320516}
   doorRight: {fileID: 7055302864557862048}
