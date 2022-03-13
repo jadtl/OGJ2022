@@ -8,7 +8,7 @@ using UnityEngine.UI;
 using UnityEngine.UIElements;
 using Slider = UnityEngine.UI.Slider;
 
-public class PlayerMovement : MonoBehaviour
+public class PlayerMovement : Score
 {
     private const string Horizontal = "Horizontal";
     private const string Vertical = "Vertical";
@@ -24,7 +24,7 @@ public class PlayerMovement : MonoBehaviour
         isRecharging = true,
         waitingForRecharge = false;
 
-    private int health = 20, score = 0, currentCheckpoint = 0;
+    private int health = 20, currentCheckpoint = 0;
     private List<Vector2> checkpoints = new List<Vector2>();
     [SerializeField] private AudioSource core, soy, waterIn, waterOut;
     [SerializeField] private Transform tail, head;
@@ -33,7 +33,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private Animator anim;
     [SerializeField] private Slider healthSlider, inkSlider;
     [SerializeField] private TextMeshProUGUI scoreText;
-    
+
     // Start is called before the first frame update
     void Start()
     {
@@ -53,7 +53,7 @@ public class PlayerMovement : MonoBehaviour
         //print(isRecharging);
         //print(GetComponent<Rigidbody2D>().velocity.magnitude);
         //print(score);
-        
+
         healthSlider.value = (float) health / 20;
         inkSlider.value = remainingPropulsion / 1000;
         if (score > 99999) score = 99999;
@@ -68,7 +68,7 @@ public class PlayerMovement : MonoBehaviour
         horizontalInput = Input.GetAxis(Horizontal);
         verticalInput = Input.GetAxis(Vertical);
         if (horizontalInput == 0 && verticalInput == 0) GetComponent<Rigidbody2D>().angularVelocity = 0;
-        
+
         GetComponent<Rigidbody2D>().AddForce(Vector2.right * horizontalInput * speed);
         if (inWater) GetComponent<Rigidbody2D>().AddForce(Vector2.up * verticalInput * speed);
 
@@ -76,7 +76,7 @@ public class PlayerMovement : MonoBehaviour
         {
             StartCoroutine(Dash());
         }
-        
+
         if (Input.GetKey(KeyCode.Space))
         {
             isRecharging = false;
@@ -95,7 +95,7 @@ public class PlayerMovement : MonoBehaviour
         if (isRecharging) remainingPropulsion += 300 * Time.deltaTime;
         if (remainingPropulsion < 0) remainingPropulsion = 0;
         if (remainingPropulsion > 1000) remainingPropulsion = 1000;
-        
+
         //Change drag based on water/air
         inWater = transform.position.y < 0;
         GetComponent<Rigidbody2D>().gravityScale = inWater ? .3f : 1;
@@ -114,13 +114,13 @@ public class PlayerMovement : MonoBehaviour
             tail.rotation =
                 Quaternion.RotateTowards(tail.rotation, targetRotation, rotationSpeed * Time.deltaTime);
         }
-        
+
         //Rotate head towards mouse
         Vector3 pos = cam.WorldToScreenPoint(head.position);
         Vector3 dir = Input.mousePosition - pos;
         float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
         head.rotation = Quaternion.AngleAxis(angle - 90f, Vector3.forward);
-        
+
         //Manage health
         if (health == 0)
         {
@@ -128,15 +128,16 @@ public class PlayerMovement : MonoBehaviour
         }
 
         if (currentCheckpoint == 2 && !soy.isPlaying) {
-            //core.Stop();
+            core.Stop();
             soy.Play();
         }
     }
-    
+
     IEnumerator Dash()
     {
         dashCount--;
         isDashing = true;
+        canGetHit = false;
         GetComponent<Rigidbody2D>().AddForce(Vector2.right * horizontalInput * 200);
         GetComponent<Rigidbody2D>().AddForce(Vector2.up * verticalInput * 200);
         dashParticles.SetActive(true);
@@ -144,11 +145,12 @@ public class PlayerMovement : MonoBehaviour
         yield return new WaitForSeconds(.75f);
         anim.SetBool("Dash", false);
         isDashing = false;
+        canGetHit = true;
         dashParticles.SetActive(false);
         yield return new WaitForSeconds(3.5f);
         dashCount++;
     }
-    
+
     IEnumerator Shoot()
     {
         canShoot = false;

@@ -2,8 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Enemy : MonoBehaviour
-{  
+public class Enemy : Score
+{
     protected int rarity;
     protected bool inWater = true, canGetHit = true;
     [SerializeField] protected float health;
@@ -12,11 +12,11 @@ public class Enemy : MonoBehaviour
     [SerializeField] protected Transform player;
     [SerializeField] protected Animator anim;
     [SerializeField] protected bool isBoss;
-    
+
     // Start is called before the first frame update
     void Start()
     {
-        
+
     }
 
     // Update is called once per frame
@@ -29,7 +29,7 @@ public class Enemy : MonoBehaviour
             StartCoroutine(Die());
         }
     }
-    
+
     IEnumerator Die()
     {
         foreach (var renderer in GetComponentsInChildren<SpriteRenderer>())
@@ -43,11 +43,11 @@ public class Enemy : MonoBehaviour
         }
         GetComponent<Collider2D>().enabled = false;
         yield return new WaitForSeconds(1);
-        playerMovement.IncrementScore(GetRarity());
+        score += GetRarity();
         if (!isBoss) Destroy(gameObject);
         else gameObject.AddComponent<Rigidbody2D>();
     }
-    
+
     public void TakeDamage(int damage)
     {
         if (canGetHit)
