@@ -26,7 +26,7 @@ public class PlayerMovement : MonoBehaviour
 
     private int health = 20, score = 12345, currentCheckpoint = 0;
     private List<Vector2> checkpoints = new List<Vector2>();
-
+    [SerializeField] private AudioSource core, soy;
     [SerializeField] private Transform tail, head;
     [SerializeField] private GameObject dashParticles, jetParticles, bullet;
     [SerializeField] private Camera cam;
@@ -40,6 +40,7 @@ public class PlayerMovement : MonoBehaviour
         checkpoints.Add(new Vector2(-5, -15));
         checkpoints.Add(new Vector2(108, -15));
         checkpoints.Add(new Vector2(195, -25));
+        core.Play();
     }
 
     // Update is called once per frame
@@ -119,6 +120,11 @@ public class PlayerMovement : MonoBehaviour
         if (health == 0)
         {
             StartCoroutine(Die());
+        }
+
+        if (currentCheckpoint == 2 && !soy.isPlaying) {
+            core.Stop();
+            soy.Play();
         }
     }
     
