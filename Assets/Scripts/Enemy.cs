@@ -22,8 +22,25 @@ public class Enemy : MonoBehaviour
         GetComponent<Rigidbody2D>().gravityScale = inWater ? 0 : 1;
         if (health == 0)
         {
-            Destroy(gameObject);
+            StartCoroutine(Die());
         }
+    }
+    
+    IEnumerator Die()
+    {
+        foreach (var renderer in GetComponentsInChildren<SpriteRenderer>())
+        {
+            renderer.color = Color.red;
+        }
+        yield return new WaitForSeconds(.1f);
+        foreach (var renderer in GetComponentsInChildren<SpriteRenderer>())
+        {
+            renderer.color = Color.white;
+        }
+        GetComponent<SpriteRenderer>().enabled = false;
+        GetComponent<Collider2D>().enabled = false;
+        yield return new WaitForSeconds(1);
+        Destroy(gameObject);
     }
     
     public void TakeDamage(int damage)
@@ -38,6 +55,15 @@ public class Enemy : MonoBehaviour
     IEnumerator Recover()
     {
         canGetHit = false;
+        foreach (var renderer in GetComponentsInChildren<SpriteRenderer>())
+        {
+            renderer.color = Color.red;
+        }
+        yield return new WaitForSeconds(.1f);
+        foreach (var renderer in GetComponentsInChildren<SpriteRenderer>())
+        {
+            renderer.color = Color.white;
+        }
         yield return new WaitForSeconds(1);
         canGetHit = true;
     }
