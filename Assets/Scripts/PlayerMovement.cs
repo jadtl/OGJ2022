@@ -28,7 +28,7 @@ public class PlayerMovement : Score
     private List<Vector2> checkpoints = new List<Vector2>();
     [SerializeField] private AudioSource core, soy, waterIn, waterOut;
     [SerializeField] private Transform tail, head;
-    [SerializeField] private GameObject dashParticles, jetParticles, bullet;
+    [SerializeField] private GameObject dashParticles, jetParticles, bullet, titan;
     [SerializeField] private Camera cam;
     [SerializeField] private Animator anim;
     [SerializeField] private Slider healthSlider, inkSlider;
@@ -91,7 +91,7 @@ public class PlayerMovement : Score
         {
             StartCoroutine(Recharge());
         }
-        if (!Input.GetKey(KeyCode.Space) || remainingPropulsion < 1) jetParticles.SetActive(false);
+        if (!Input.GetKey(KeyCode.Space)) jetParticles.SetActive(false);
         if (isRecharging) remainingPropulsion += 300 * Time.deltaTime;
         if (remainingPropulsion < 0) remainingPropulsion = 0;
         if (remainingPropulsion > 1000) remainingPropulsion = 1000;
@@ -131,6 +131,8 @@ public class PlayerMovement : Score
             core.Stop();
             soy.Play();
         }
+        
+        if (currentCheckpoint == 2) titan.SetActive(true);
     }
 
     IEnumerator Dash()
@@ -181,6 +183,7 @@ public class PlayerMovement : Score
             renderer.color = Color.white;
         }
 
+        health = 20;
         transform.position = checkpoints[currentCheckpoint];
     }
 
