@@ -19,6 +19,9 @@ public class FishEnemyMovement : Enemy
     // Update is called once per frame
     void Update()
     {
+        
+        if (GetComponent<Rigidbody2D>().velocity.magnitude == 0) GetComponent<Rigidbody2D>().angularVelocity = 0;
+        
         Vector2 playerPosition = cam.WorldToViewportPoint(player.position);
         Vector2 transformPosition = (Vector2)cam.WorldToViewportPoint(transform.position);
         float angle = AngleBetweenTwoPoints(playerPosition, transformPosition);
@@ -28,7 +31,6 @@ public class FishEnemyMovement : Enemy
             StartCoroutine(Attack());
         }
         
-        if (GetComponent<Rigidbody2D>().velocity.magnitude == 0) GetComponent<Rigidbody2D>().angularVelocity = 0;
 
         if (health == 0)
         {
@@ -43,6 +45,9 @@ public class FishEnemyMovement : Enemy
     IEnumerator Attack()
     {
         canAttack = false;
+        anim.SetBool("Dash", true);
+        yield return new WaitForSeconds(1);
+        anim.SetBool("Dash", false);
         GetComponent<Rigidbody2D>().AddForce(transform.right * 700);
         yield return new WaitForSeconds(5);
         canAttack = true;

@@ -11,7 +11,7 @@ public class PlayerMovement : MonoBehaviour
 
     private float horizontalInput, verticalInput;
 
-    private float speed = 10, rotationSpeed = 300, dashCount = 2, remainingPropulsion = 300;
+    private float speed = 7, rotationSpeed = 300, dashCount = 2, remainingPropulsion = 300;
 
     private bool inWater = false,
         canGetHit = true,
@@ -20,11 +20,12 @@ public class PlayerMovement : MonoBehaviour
         isRecharging = true,
         waitingForRecharge = false;
 
-    private int health = 10;
+    private int health = 20;
 
     [SerializeField] private Transform tail, head;
     [SerializeField] private GameObject ink, bullet;
     [SerializeField] private Camera cam;
+    [SerializeField] private Animator anim;
     
     // Start is called before the first frame update
     void Start()
@@ -38,7 +39,7 @@ public class PlayerMovement : MonoBehaviour
         //print("Health: " + health);
         //print("horizontal: " + horizontalInput);
         //print("vertical: " + verticalInput);
-        //print("Remaining propulsion: " + remainingPropulsion);
+        print("Remaining propulsion: " + remainingPropulsion);
         //print(isRecharging);
 
         if (Input.GetMouseButtonDown(0) && canShoot)
@@ -63,7 +64,7 @@ public class PlayerMovement : MonoBehaviour
         {
             isRecharging = false;
             remainingPropulsion -= Time.time;
-            if (remainingPropulsion > 1) GetComponent<Rigidbody2D>().AddForce(tail.up * 20);
+            if (remainingPropulsion > 1) GetComponent<Rigidbody2D>().AddForce(tail.up * 10);
         }
         else if (!waitingForRecharge && remainingPropulsion < 299)
         {
@@ -108,7 +109,9 @@ public class PlayerMovement : MonoBehaviour
         GetComponent<Rigidbody2D>().AddForce(Vector2.right * horizontalInput * 200);
         GetComponent<Rigidbody2D>().AddForce(Vector2.up * verticalInput * 200);
         ink.SetActive(true);
-        yield return new WaitForSeconds(.5f);
+        anim.SetBool("Dash", true);
+        yield return new WaitForSeconds(.25f);
+        anim.SetBool("Dash", false);
         isDashing = false;
         ink.SetActive(false);
         yield return new WaitForSeconds(3.5f);
@@ -119,8 +122,8 @@ public class PlayerMovement : MonoBehaviour
     {
         canShoot = false;
         GameObject spawnedBullet = GameObject.Instantiate(bullet, head.position + head.up, head.rotation);
-        spawnedBullet.GetComponent<Rigidbody2D>().AddForce(head.up * 500);
-        yield return new WaitForSeconds(1);
+        spawnedBullet.GetComponent<Rigidbody2D>().AddForce(head.up * 1000);
+        yield return new WaitForSeconds(.1f);
         canShoot = true;
     }
 

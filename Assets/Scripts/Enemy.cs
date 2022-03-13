@@ -6,6 +6,7 @@ public class Enemy : MonoBehaviour
 {
     protected bool inWater = true, canGetHit = true;
     protected float health = 4;
+    [SerializeField] protected Animator anim;
     
     
     // Start is called before the first frame update
