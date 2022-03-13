@@ -1,8 +1,12 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Serialization;
+using UnityEngine.UI;
+using UnityEngine.UIElements;
+using Slider = UnityEngine.UI.Slider;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -11,7 +15,7 @@ public class PlayerMovement : MonoBehaviour
 
     private float horizontalInput, verticalInput;
 
-    private float speed = 7, rotationSpeed = 300, dashCount = 2, remainingPropulsion = 300;
+    private float speed = 7, rotationSpeed = 300, dashCount = 2, remainingPropulsion = 1000;
 
     private bool inWater = false,
         canGetHit = true,
@@ -20,12 +24,14 @@ public class PlayerMovement : MonoBehaviour
         isRecharging = true,
         waitingForRecharge = false;
 
-    private int health = 20;
+    private int health = 20, score = 12345;
 
     [SerializeField] private Transform tail, head;
     [SerializeField] private GameObject ink, bullet;
     [SerializeField] private Camera cam;
     [SerializeField] private Animator anim;
+    [SerializeField] private Slider healthSlider, inkSlider;
+    [SerializeField] private TextMeshProUGUI scoreText;
     
     // Start is called before the first frame update
     void Start()
@@ -39,8 +45,13 @@ public class PlayerMovement : MonoBehaviour
         //print("Health: " + health);
         //print("horizontal: " + horizontalInput);
         //print("vertical: " + verticalInput);
-        print("Remaining propulsion: " + remainingPropulsion);
+        //print("Remaining propulsion: " + remainingPropulsion);
         //print(isRecharging);
+        
+        healthSlider.value = (float) health / 20;
+        inkSlider.value = remainingPropulsion / 1000;
+        if (score > 99999) score = 99999;
+        scoreText.text = score.ToString();
 
         if (Input.GetMouseButtonDown(0) && canShoot)
         {
@@ -64,16 +75,16 @@ public class PlayerMovement : MonoBehaviour
         {
             isRecharging = false;
             remainingPropulsion -= Time.time;
-            if (remainingPropulsion > 1) GetComponent<Rigidbody2D>().AddForce(tail.up * 10);
+            if (remainingPropulsion > 1) GetComponent<Rigidbody2D>().AddForce(tail.up * 20);
         }
-        else if (!waitingForRecharge && remainingPropulsion < 299)
+        else if (!waitingForRecharge && remainingPropulsion < 999)
         {
             StartCoroutine(Recharge());
         }
 
-        if (isRecharging) remainingPropulsion += 100 * Time.deltaTime;
+        if (isRecharging) remainingPropulsion += 300 * Time.deltaTime;
         if (remainingPropulsion < 0) remainingPropulsion = 0;
-        if (remainingPropulsion > 300) remainingPropulsion = 300;
+        if (remainingPropulsion > 1000) remainingPropulsion = 1000;
         
         //Change drag based on water/air
         inWater = transform.position.y < 0;

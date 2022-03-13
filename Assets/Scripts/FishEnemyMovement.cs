@@ -17,9 +17,9 @@ public class FishEnemyMovement : Enemy
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
-        
+        SuperUpdate();
         if (GetComponent<Rigidbody2D>().velocity.magnitude == 0) GetComponent<Rigidbody2D>().angularVelocity = 0;
         
         Vector2 playerPosition = cam.WorldToViewportPoint(player.position);
@@ -32,10 +32,7 @@ public class FishEnemyMovement : Enemy
         }
         
 
-        if (health == 0)
-        {
-            Destroy(gameObject);
-        }
+        
     }
     
     float AngleBetweenTwoPoints(Vector3 a, Vector3 b) {
@@ -48,7 +45,7 @@ public class FishEnemyMovement : Enemy
         anim.SetBool("Dash", true);
         yield return new WaitForSeconds(1);
         anim.SetBool("Dash", false);
-        GetComponent<Rigidbody2D>().AddForce(transform.right * 700);
+        GetComponent<Rigidbody2D>().AddForce(transform.right * 4000);
         yield return new WaitForSeconds(5);
         canAttack = true;
     }

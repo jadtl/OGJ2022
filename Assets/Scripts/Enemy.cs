@@ -16,10 +16,14 @@ public class Enemy : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    protected void SuperUpdate()
     {
         inWater = transform.position.y < 0;
         GetComponent<Rigidbody2D>().gravityScale = inWater ? 0 : 1;
+        if (health == 0)
+        {
+            Destroy(gameObject);
+        }
     }
     
     public void TakeDamage(int damage)
