@@ -7,17 +7,18 @@ public class Menu: MonoBehaviour
 {
     [SerializeField]private GameObject settingsMenu, pauseMenu;
     private bool isPaused = false;
+    [SerializeField] private bool isMainMenu;
 
     // Start is called before the first frame update
     void Start()
     {
-        
+        if (isMainMenu) isPaused = true;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if(Input.GetKeyDown(KeyCode.Escape))
+        if(Input.GetKeyDown(KeyCode.Escape) && !isMainMenu)
         {
             if (isPaused)
             {

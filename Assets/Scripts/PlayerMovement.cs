@@ -47,6 +47,7 @@ public class PlayerMovement : MonoBehaviour
         //print("vertical: " + verticalInput);
         //print("Remaining propulsion: " + remainingPropulsion);
         //print(isRecharging);
+        print(GetComponent<Rigidbody2D>().velocity.magnitude);
         
         healthSlider.value = (float) health / 20;
         inkSlider.value = remainingPropulsion / 1000;
@@ -74,8 +75,8 @@ public class PlayerMovement : MonoBehaviour
         if (Input.GetKey(KeyCode.Space))
         {
             isRecharging = false;
-            remainingPropulsion -= Time.time;
-            if (remainingPropulsion > 1) GetComponent<Rigidbody2D>().AddForce(tail.up * 20);
+            remainingPropulsion -= Time.deltaTime * 700;
+            if (remainingPropulsion > 1) GetComponent<Rigidbody2D>().AddForce(tail.up * 10);
         }
         else if (!waitingForRecharge && remainingPropulsion < 999)
         {
@@ -132,7 +133,7 @@ public class PlayerMovement : MonoBehaviour
     IEnumerator Shoot()
     {
         canShoot = false;
-        GameObject spawnedBullet = GameObject.Instantiate(bullet, head.position + head.up, head.rotation);
+        GameObject spawnedBullet = GameObject.Instantiate(bullet, head.position + head.up * .25f, head.rotation);
         spawnedBullet.GetComponent<Rigidbody2D>().AddForce(head.up * 1000);
         yield return new WaitForSeconds(.1f);
         canShoot = true;
