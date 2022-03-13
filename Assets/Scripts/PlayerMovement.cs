@@ -8,7 +8,7 @@ using UnityEngine.UI;
 using UnityEngine.UIElements;
 using Slider = UnityEngine.UI.Slider;
 
-public class PlayerMovement : MonoBehaviour
+public class PlayerMovement : Score
 {
     private const string Horizontal = "Horizontal";
     private const string Vertical = "Vertical";
@@ -24,7 +24,7 @@ public class PlayerMovement : MonoBehaviour
         isRecharging = true,
         waitingForRecharge = false;
 
-    private int health = 20, score = 0, currentCheckpoint = 0;
+    private int health = 20, currentCheckpoint = 0;
     private List<Vector2> checkpoints = new List<Vector2>();
     [SerializeField] private AudioSource core, soy, waterIn, waterOut;
     [SerializeField] private Transform tail, head;

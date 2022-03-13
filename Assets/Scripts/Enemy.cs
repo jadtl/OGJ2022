@@ -2,12 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Enemy : MonoBehaviour
+public class Enemy : Score
 {  
     protected int rarity;
     protected bool inWater = true, canGetHit = true;
     protected float health = 4;
-    [SerializeField] private PlayerMovement playerMovement;
     [SerializeField] protected Camera cam;
     [SerializeField] protected Transform player;
     [SerializeField] protected Animator anim;
@@ -42,7 +41,7 @@ public class Enemy : MonoBehaviour
         }
         GetComponent<Collider2D>().enabled = false;
         yield return new WaitForSeconds(1);
-        playerMovement.IncrementScore(GetRarity());
+        score += GetRarity();
         Destroy(gameObject);
     }
     

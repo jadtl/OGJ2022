@@ -3,9 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Bullet : MonoBehaviour
+public class Bullet : Score
 {
-    [SerializeField] private PlayerMovement player;
     private bool inWater = false;
     
     // Start is called before the first frame update
@@ -27,7 +26,7 @@ public class Bullet : MonoBehaviour
         {
             print("get rekt");
             col.transform.GetComponent<Enemy>().TakeDamage(2);
-            player.IncrementScore(col.transform.GetComponent<Enemy>().GetRarity());
+            score += col.transform.GetComponent<Enemy>().GetRarity() / 4;
             StartCoroutine(Die());
         }
     }
