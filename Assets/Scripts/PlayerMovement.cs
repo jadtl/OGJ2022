@@ -1,8 +1,12 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Serialization;
+using UnityEngine.UI;
+using UnityEngine.UIElements;
+using Slider = UnityEngine.UI.Slider;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -20,12 +24,14 @@ public class PlayerMovement : MonoBehaviour
         isRecharging = true,
         waitingForRecharge = false;
 
-    private int health = 20;
+    private int health = 20, score = 12345;
 
     [SerializeField] private Transform tail, head;
     [SerializeField] private GameObject ink, bullet;
     [SerializeField] private Camera cam;
     [SerializeField] private Animator anim;
+    [SerializeField] private Slider healthSlider, inkSlider;
+    [SerializeField] private TextMeshProUGUI scoreText;
     
     // Start is called before the first frame update
     void Start()
@@ -36,11 +42,16 @@ public class PlayerMovement : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-        //print("Health: " + health);
+        print("Health: " + health);
         //print("horizontal: " + horizontalInput);
         //print("vertical: " + verticalInput);
-        print("Remaining propulsion: " + remainingPropulsion);
+        //print("Remaining propulsion: " + remainingPropulsion);
         //print(isRecharging);
+        
+        healthSlider.value = (float) health / 20;
+        inkSlider.value = remainingPropulsion / 300;
+        if (score > 99999) score = 99999;
+        scoreText.text = score.ToString();
 
         if (Input.GetMouseButtonDown(0) && canShoot)
         {
