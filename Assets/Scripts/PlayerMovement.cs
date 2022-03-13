@@ -24,10 +24,11 @@ public class PlayerMovement : MonoBehaviour
         isRecharging = true,
         waitingForRecharge = false;
 
-    private int health = 20, score = 12345;
+    private int health = 20, score = 12345, currentCheckpoint = 0;
+    private List<Vector2> checkpoints = new List<Vector2>();
 
     [SerializeField] private Transform tail, head;
-    [SerializeField] private GameObject ink, bullet;
+    [SerializeField] private GameObject dashParticles, jetParticles, bullet;
     [SerializeField] private Camera cam;
     [SerializeField] private Animator anim;
     [SerializeField] private Slider healthSlider, inkSlider;
@@ -36,7 +37,9 @@ public class PlayerMovement : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        checkpoints.Add(new Vector2(-5, -15));
+        checkpoints.Add(new Vector2(108, -15));
+        checkpoints.Add(new Vector2(195, -25));
     }
 
     // Update is called once per frame
@@ -47,7 +50,8 @@ public class PlayerMovement : MonoBehaviour
         //print("vertical: " + verticalInput);
         //print("Remaining propulsion: " + remainingPropulsion);
         //print(isRecharging);
-        print(GetComponent<Rigidbody2D>().velocity.magnitude);
+        //print(GetComponent<Rigidbody2D>().velocity.magnitude);
+        print(currentCheckpoint);
         
         healthSlider.value = (float) health / 20;
         inkSlider.value = remainingPropulsion / 1000;
@@ -76,13 +80,17 @@ public class PlayerMovement : MonoBehaviour
         {
             isRecharging = false;
             remainingPropulsion -= Time.deltaTime * 700;
-            if (remainingPropulsion > 1) GetComponent<Rigidbody2D>().AddForce(tail.up * 10);
+            if (remainingPropulsion > 1)
+            {
+                jetParticles.SetActive(true);
+                GetComponent<Rigidbody2D>().AddForce(tail.up * 10);
+            }
         }
         else if (!waitingForRecharge && remainingPropulsion < 999)
         {
             StartCoroutine(Recharge());
         }
-
+        if (!Input.GetKey(KeyCode.Space)) jetParticles.SetActive(false);
         if (isRecharging) remainingPropulsion += 300 * Time.deltaTime;
         if (remainingPropulsion < 0) remainingPropulsion = 0;
         if (remainingPropulsion > 1000) remainingPropulsion = 1000;
@@ -110,7 +118,7 @@ public class PlayerMovement : MonoBehaviour
         //Manage health
         if (health == 0)
         {
-            Destroy(gameObject);
+            StartCoroutine(Die());
         }
     }
     
@@ -120,12 +128,12 @@ public class PlayerMovement : MonoBehaviour
         isDashing = true;
         GetComponent<Rigidbody2D>().AddForce(Vector2.right * horizontalInput * 200);
         GetComponent<Rigidbody2D>().AddForce(Vector2.up * verticalInput * 200);
-        ink.SetActive(true);
+        dashParticles.SetActive(true);
         anim.SetBool("Dash", true);
         yield return new WaitForSeconds(.25f);
         anim.SetBool("Dash", false);
         isDashing = false;
-        ink.SetActive(false);
+        dashParticles.SetActive(false);
         yield return new WaitForSeconds(3.5f);
         dashCount++;
     }
@@ -148,8 +156,32 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
+    IEnumerator Die()
+    {
+        foreach (var renderer in GetComponentsInChildren<SpriteRenderer>())
+        {
+            renderer.color = Color.red;
+        }
+        yield return new WaitForSeconds(.1f);
+        foreach (var renderer in GetComponentsInChildren<SpriteRenderer>())
+        {
+            renderer.color = Color.white;
+        }
+
+        transform.position = checkpoints[currentCheckpoint];
+    }
+
     IEnumerator Recover()
     {
+        foreach (var renderer in GetComponentsInChildren<SpriteRenderer>())
+        {
+            renderer.color = Color.red;
+        }
+        yield return new WaitForSeconds(.1f);
+        foreach (var renderer in GetComponentsInChildren<SpriteRenderer>())
+        {
+            renderer.color = Color.white;
+        }
         canGetHit = false;
         yield return new WaitForSeconds(3);
         canGetHit = true;
@@ -161,5 +193,10 @@ public class PlayerMovement : MonoBehaviour
         yield return new WaitForSeconds(1);
         waitingForRecharge = false;
         isRecharging = true;
+    }
+
+    public void SetCheckpoint(int index)
+    {
+        currentCheckpoint = index;
     }
 }
