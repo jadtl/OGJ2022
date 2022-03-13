@@ -26,7 +26,15 @@ public class Bullet : MonoBehaviour
         {
             print("get rekt");
             col.transform.GetComponent<Enemy>().TakeDamage(2);
-            Destroy(gameObject);
+            StartCoroutine(Die());
         }
+    }
+
+    IEnumerator Die()
+    {
+        GetComponent<SpriteRenderer>().enabled = false;
+        GetComponent<Collider2D>().enabled = false;
+        yield return new WaitForSeconds(1);
+        Destroy(gameObject);
     }
 }
