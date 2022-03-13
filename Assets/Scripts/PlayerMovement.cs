@@ -128,7 +128,7 @@ public class PlayerMovement : Score
         }
 
         if (currentCheckpoint == 2 && !soy.isPlaying) {
-            //core.Stop();
+            core.Stop();
             soy.Play();
         }
     }
