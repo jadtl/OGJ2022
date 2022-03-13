@@ -91,7 +91,7 @@ public class PlayerMovement : MonoBehaviour
         {
             StartCoroutine(Recharge());
         }
-        if (!Input.GetKey(KeyCode.Space)) jetParticles.SetActive(false);
+        if (!Input.GetKey(KeyCode.Space) || remainingPropulsion < 1) jetParticles.SetActive(false);
         if (isRecharging) remainingPropulsion += 300 * Time.deltaTime;
         if (remainingPropulsion < 0) remainingPropulsion = 0;
         if (remainingPropulsion > 1000) remainingPropulsion = 1000;
