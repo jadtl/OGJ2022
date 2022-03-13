@@ -15,7 +15,7 @@ public class PlayerMovement : MonoBehaviour
 
     private float horizontalInput, verticalInput;
 
-    private float speed = 7, rotationSpeed = 300, dashCount = 2, remainingPropulsion = 300;
+    private float speed = 7, rotationSpeed = 300, dashCount = 2, remainingPropulsion = 1000;
 
     private bool inWater = false,
         canGetHit = true,
@@ -42,14 +42,14 @@ public class PlayerMovement : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-        print("Health: " + health);
+        //print("Health: " + health);
         //print("horizontal: " + horizontalInput);
         //print("vertical: " + verticalInput);
         //print("Remaining propulsion: " + remainingPropulsion);
         //print(isRecharging);
         
         healthSlider.value = (float) health / 20;
-        inkSlider.value = remainingPropulsion / 300;
+        inkSlider.value = remainingPropulsion / 1000;
         if (score > 99999) score = 99999;
         scoreText.text = score.ToString();
 
@@ -75,16 +75,16 @@ public class PlayerMovement : MonoBehaviour
         {
             isRecharging = false;
             remainingPropulsion -= Time.time;
-            if (remainingPropulsion > 1) GetComponent<Rigidbody2D>().AddForce(tail.up * 10);
+            if (remainingPropulsion > 1) GetComponent<Rigidbody2D>().AddForce(tail.up * 20);
         }
-        else if (!waitingForRecharge && remainingPropulsion < 299)
+        else if (!waitingForRecharge && remainingPropulsion < 999)
         {
             StartCoroutine(Recharge());
         }
 
-        if (isRecharging) remainingPropulsion += 100 * Time.deltaTime;
+        if (isRecharging) remainingPropulsion += 300 * Time.deltaTime;
         if (remainingPropulsion < 0) remainingPropulsion = 0;
-        if (remainingPropulsion > 300) remainingPropulsion = 300;
+        if (remainingPropulsion > 1000) remainingPropulsion = 1000;
         
         //Change drag based on water/air
         inWater = transform.position.y < 0;

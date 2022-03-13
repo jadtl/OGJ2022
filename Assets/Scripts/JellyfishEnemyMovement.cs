@@ -17,7 +17,7 @@ public class JellyfishEnemyMovement : Enemy
     // Update is called once per frame
     void Update()
     {
-        
+        SuperUpdate();
         if (reachedTarget)
         {
             destination = initialPosition + Random.insideUnitCircle * 5;

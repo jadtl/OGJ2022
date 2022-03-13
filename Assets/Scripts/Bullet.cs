@@ -24,6 +24,7 @@ public class Bullet : MonoBehaviour
     {
         if (col.transform.CompareTag("Enemy"))
         {
+            print("get rekt");
             col.transform.GetComponent<Enemy>().TakeDamage(2);
             Destroy(gameObject);
         }
