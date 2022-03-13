@@ -27,6 +27,7 @@ public class Menu: MonoBehaviour
             {
                 Pause();
             }
+            isPaused = !isPaused;
         }
     }
     public void Pause()
@@ -37,6 +38,7 @@ public class Menu: MonoBehaviour
     public void Resume()
     {
         pauseMenu.SetActive(false);
+        settingsMenu.SetActive(false);
         Time.timeScale = 1f;
     }
     public void Play()
