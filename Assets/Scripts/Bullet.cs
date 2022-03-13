@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class Bullet : MonoBehaviour
 {
+    [SerializeField] private PlayerMovement player;
     private bool inWater = false;
     
     // Start is called before the first frame update
@@ -26,6 +27,7 @@ public class Bullet : MonoBehaviour
         {
             print("get rekt");
             col.transform.GetComponent<Enemy>().TakeDamage(2);
+            player.IncrementScore(col.transform.GetComponent<Enemy>().GetRarity());
             StartCoroutine(Die());
         }
     }

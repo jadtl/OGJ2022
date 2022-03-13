@@ -4,8 +4,6 @@ using UnityEngine;
 
 public class JellyfishEnemyMovement : Enemy
 {
-    [SerializeField] private Transform player;
-    [SerializeField] private Camera cam;
     [SerializeField] private AudioSource source;
     private Vector2 initialPosition;
     private Vector2 destination;
@@ -17,6 +15,7 @@ public class JellyfishEnemyMovement : Enemy
     // Start is called before the first frame update
     void Start()
     {
+        rarity = 200;
         initialPosition = transform.position;
         source = GetComponent<AudioSource>();
     }
@@ -40,7 +39,7 @@ public class JellyfishEnemyMovement : Enemy
         // Random sounds if close enough
         Vector2 playerPosition = cam.WorldToViewportPoint(player.position);
         Vector2 transformPosition = (Vector2)cam.WorldToViewportPoint(transform.position);
-        print(Vector2.Distance(playerPosition, transformPosition));
+        //print(Vector2.Distance(playerPosition, transformPosition));
         if (Vector2.Distance(playerPosition, transformPosition) < 0.6f) {
             if (!source.isPlaying) {
                 if (waitTimeCountdown < 0f) {

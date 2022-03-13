@@ -3,11 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Enemy : MonoBehaviour
-{
+{  
+    protected int rarity;
     protected bool inWater = true, canGetHit = true;
     protected float health = 4;
+    [SerializeField] private PlayerMovement playerMovement;
+    [SerializeField] protected Camera cam;
+    [SerializeField] protected Transform player;
     [SerializeField] protected Animator anim;
-    
     
     // Start is called before the first frame update
     void Start()
@@ -35,11 +38,11 @@ public class Enemy : MonoBehaviour
         yield return new WaitForSeconds(.1f);
         foreach (var renderer in GetComponentsInChildren<SpriteRenderer>())
         {
-            renderer.color = Color.white;
+            renderer.enabled = false;
         }
-        GetComponent<SpriteRenderer>().enabled = false;
         GetComponent<Collider2D>().enabled = false;
         yield return new WaitForSeconds(1);
+        playerMovement.IncrementScore(GetRarity());
         Destroy(gameObject);
     }
     
@@ -66,5 +69,9 @@ public class Enemy : MonoBehaviour
         }
         yield return new WaitForSeconds(1);
         canGetHit = true;
+    }
+
+    public int GetRarity() {
+        return rarity;
     }
 }

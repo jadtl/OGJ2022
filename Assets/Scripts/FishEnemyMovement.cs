@@ -4,15 +4,12 @@ using UnityEngine;
 
 public class FishEnemyMovement : Enemy
 {
-    [SerializeField] private Transform player;
-    [SerializeField] private Camera cam;
-
     private bool canAttack = true;
     
     // Start is called before the first frame update
     void Start()
     {
-        
+        rarity = 100;
     }
 
     // Update is called once per frame
@@ -28,10 +25,7 @@ public class FishEnemyMovement : Enemy
         if (canAttack)
         {
             StartCoroutine(Attack());
-        }
-        
-
-        
+        }     
     }
     
     float AngleBetweenTwoPoints(Vector3 a, Vector3 b) {

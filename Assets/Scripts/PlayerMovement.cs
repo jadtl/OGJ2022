@@ -24,7 +24,7 @@ public class PlayerMovement : MonoBehaviour
         isRecharging = true,
         waitingForRecharge = false;
 
-    private int health = 20, score = 12345, currentCheckpoint = 0;
+    private int health = 20, score = 0, currentCheckpoint = 0;
     private List<Vector2> checkpoints = new List<Vector2>();
     [SerializeField] private AudioSource core, soy;
     [SerializeField] private Transform tail, head;
@@ -52,7 +52,7 @@ public class PlayerMovement : MonoBehaviour
         //print("Remaining propulsion: " + remainingPropulsion);
         //print(isRecharging);
         //print(GetComponent<Rigidbody2D>().velocity.magnitude);
-        print(currentCheckpoint);
+        //print(score);
         
         healthSlider.value = (float) health / 20;
         inkSlider.value = remainingPropulsion / 1000;
@@ -204,5 +204,9 @@ public class PlayerMovement : MonoBehaviour
     public void SetCheckpoint(int index)
     {
         currentCheckpoint = index;
+    }
+
+    public void IncrementScore(int value) {
+        score += value;
     }
 }
