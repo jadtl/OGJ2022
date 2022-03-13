@@ -4,10 +4,12 @@ using UnityEngine;
 
 public class JellyfishEnemyMovement : Enemy
 {
+    [SerializeField] private Transform player;
+    [SerializeField] private Camera cam;
+    [SerializeField] private AudioSource source;
     private Vector2 initialPosition;
     private Vector2 destination;
     private bool reachedTarget = true;
-    [SerializeField] private AudioSource source;
     private float minWaitTime = 5f;
     private float maxWaitTime = 10f;
     private float waitTimeCountdown = -1f;
@@ -21,7 +23,7 @@ public class JellyfishEnemyMovement : Enemy
 
     // Update is called once per frame
     void Update()
-    {
+    {    
         SuperUpdate();
         if (reachedTarget)
         {
@@ -35,14 +37,19 @@ public class JellyfishEnemyMovement : Enemy
             reachedTarget = true;
         }
 
-        // Random sounds
-        if (!source.isPlaying) {
-            if (waitTimeCountdown < 0f) {
-                source.Play(0);
-                waitTimeCountdown = Random.Range(minWaitTime, maxWaitTime);
-            }
-            else {
-                waitTimeCountdown -= Time.deltaTime;
+        // Random sounds if close enough
+        Vector2 playerPosition = cam.WorldToViewportPoint(player.position);
+        Vector2 transformPosition = (Vector2)cam.WorldToViewportPoint(transform.position);
+        print(Vector2.Distance(playerPosition, transformPosition));
+        if (Vector2.Distance(playerPosition, transformPosition) < 0.6f) {
+            if (!source.isPlaying) {
+                if (waitTimeCountdown < 0f) {
+                    source.Play(0);
+                    waitTimeCountdown = Random.Range(minWaitTime, maxWaitTime);
+                }
+                else {
+                    waitTimeCountdown -= Time.deltaTime;
+                }
             }
         }
     }
