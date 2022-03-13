@@ -9,7 +9,7 @@ public class Enemy : Score
     [SerializeField] protected float health;
     [SerializeField] private PlayerMovement playerMovement;
     [SerializeField] protected Camera cam;
-    [SerializeField] protected Transform player;
+    [SerializeField] protected Transform player, winScreen;
     [SerializeField] protected Animator anim;
     [SerializeField] protected bool isBoss;
 
@@ -45,7 +45,11 @@ public class Enemy : Score
         yield return new WaitForSeconds(1);
         score += GetRarity();
         if (!isBoss) Destroy(gameObject);
-        else gameObject.AddComponent<Rigidbody2D>();
+        else
+        {
+            gameObject.AddComponent<Rigidbody2D>();
+            winScreen.gameObject.SetActive(true);
+        }
     }
 
     public void TakeDamage(int damage)

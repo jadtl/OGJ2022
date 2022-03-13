@@ -97,10 +97,12 @@ public class Titan : MonoBehaviour
         int random = Random.Range(0, 4);
         if (random < 2)
         {
+            print("open doors");
             StartCoroutine(OpenDoors());
         }
         else
         {
+            print("smash");
             StartCoroutine(Smash(random == 3 ? 0 : 1));
         }
     }
