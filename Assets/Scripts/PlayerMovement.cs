@@ -132,6 +132,7 @@ public class PlayerMovement : MonoBehaviour
     {
         dashCount--;
         isDashing = true;
+        canGetHit = false;
         GetComponent<Rigidbody2D>().AddForce(Vector2.right * horizontalInput * 200);
         GetComponent<Rigidbody2D>().AddForce(Vector2.up * verticalInput * 200);
         dashParticles.SetActive(true);
@@ -139,6 +140,7 @@ public class PlayerMovement : MonoBehaviour
         yield return new WaitForSeconds(.75f);
         anim.SetBool("Dash", false);
         isDashing = false;
+        canGetHit = true;
         dashParticles.SetActive(false);
         yield return new WaitForSeconds(3.5f);
         dashCount++;
