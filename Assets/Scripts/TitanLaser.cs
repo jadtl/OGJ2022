@@ -33,7 +33,11 @@ public class TitanLaser : Enemy
 
         if (isAttacking)
         {
-            laserCast.Play();
+            // Random sounds if close enough
+            Vector2 playerPosition = cam.WorldToViewportPoint(player.position);
+            Vector2 transformPosition = (Vector2)cam.WorldToViewportPoint(transform.position);
+            if (Vector2.Distance(playerPosition, transformPosition) < 0.8f)
+                laserCast.Play();
             transform.RotateAround(eyeSprite.transform.position, pair? -transform.forward : transform.forward, 5*Time.deltaTime);
         }
     }
@@ -48,7 +52,11 @@ public class TitanLaser : Enemy
     
     IEnumerator Attack()
     {
-        laserChannel.Play();
+        // Random sounds if close enough
+        Vector2 playerPosition = cam.WorldToViewportPoint(player.position);
+        Vector2 transformPosition = (Vector2)cam.WorldToViewportPoint(transform.position);
+        if (Vector2.Distance(playerPosition, transformPosition) < 0.8f)
+            laserChannel.Play();
         isAttacking = true;
         laser.SetActive(true);
         yield return new WaitForSeconds(5);
